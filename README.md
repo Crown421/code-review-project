@@ -9,10 +9,10 @@ Basic setup
     - https://sqlmodel.tiangolo.com/
 5. ~~Add LLM to the mix~~
 6. ~~Add docker file, CI build, docker-compose.yml~~
+7. ~~Look at logging, with proper levels, use env variable to set (i.e. debug/info/warn)~~
 
 
 ## Some possible additions
-- Look at logging, with proper levels, use env variable to set (i.e. debug/info/warn)
 - Add tests (out of time for today)
 - User specific review prompts (in separate table, with separate endpoint for setting them)
     - Add endpoint that lets users send custom prompts, request body should include username, language, and the prompt itself.
@@ -21,6 +21,7 @@ Basic setup
     - The formatting/ system prompts are currently hardcoded, better would be to store them in a prompt manager and retrieve the correct version at runtime (based on config/ env variables)
 - Run a linter first (i.e. ruff, jslint, ...), for example using a sys call, to reduce LLM/ token usage
 - Embedding snippets, check if similar snippet was reviewed before and add to context if yes
+- Evaluate performance, despite using GPT-5-nano, the response is very slow.
 
 
 # Getting started
@@ -49,6 +50,11 @@ OPENAI_API_KEY=sk-....
 ```
 A better approach could be to add [fnox](https://fnox.jdx.dev/), store the secret either using local encryption or better in a cloud secret manager, and use `mise` to add it to the relevant commands (i.e. `fnox exec -- uv run fastapi dev server/src/main.py`).
 This would also allow using basically identically commands locally and in the cloud (where secret manager access would be injected for example via IAM.)
+
+## Settings
+This service can currently handle two settings via environment variables:
+- `MODEL`: The OpenAI model to use for review, default: `"gpt-5-nano"`
+- `LOG_LEVEL`: Level for the python logger, see [logger docs](https://docs.python.org/3/library/logging.html#logging-levels) for options.
 
 ## Docker compose
 This repo also builds the service image on CI, and provides a `docker-compose.yml` that consumes that image.

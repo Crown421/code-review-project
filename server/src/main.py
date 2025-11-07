@@ -1,4 +1,7 @@
 from typing import Union
+import os
+import logging
+import logging.config
 
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -8,14 +11,21 @@ from sqlmodel import Field, Session, SQLModel, create_engine, delete
 
 from openai import OpenAI
 
-# setup tasks
+# load some envs
+MOCK_OPENAI = os.getenv("MOCK_OPENAI", "false").lower() == "true"
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
+MODEL = os.getenv("MODEL", "gpt-5-nano")
+
+# setup objects
+logger = logging.getLogger(__name__)
+logger.setLevel(LOG_LEVEL)
+logging.getLogger("sqlalchemy.engine").setLevel(LOG_LEVEL)
+
 app = FastAPI()
 
-engine = create_engine("sqlite:///./test.db", echo=True)
+engine = create_engine("sqlite:///./test.db")
 
 client = OpenAI()
-
-MOCK_OPENAI = False
 
 
 # schemas
@@ -77,10 +87,12 @@ Respond in the following JSON format:
 def review_code(code: str, language: str) -> Review:
     prompt = f"Here is a {language} code snippet:\n\n{code}\n\n{basic_prompt}"
 
+    logger.info("Sending code to LLM")
+    logger.debug(f"Prompt sent to LLM: {prompt}")
     # better would be to use a proper mocking library, maybe mock the completions method, but lets start here
     if not MOCK_OPENAI:
         completions = client.chat.completions.create(
-            model="gpt-5-nano",
+            model=MODEL,
             messages=[
                 {
                     "role": "system",
@@ -92,6 +104,9 @@ def review_code(code: str, language: str) -> Review:
         response_content = completions.choices[0].message.content
 
         review = Review.model_validate(from_json(response_content))
+
+        logger.info("Received review from LLM")
+        logger.debug(f"LLM response content: {response_content}")
     else:
         # mock response for testing without hitting OpenAI API
         review = Review(
@@ -109,7 +124,11 @@ def review_code(code: str, language: str) -> Review:
 # endpoints
 @app.post("/snippets")
 def create_snippet(snippet: Snippet):
+    logger.info(f"Received snippet from user {snippet.user} for review.")
+    logger.debug(f"Snippet details: Language={snippet.language}, Code={snippet.code}")
+
     review = review_code(snippet.code, snippet.language)
+
     db_snippet = DB_Snippet(
         language=snippet.language,
         code=snippet.code,
@@ -126,6 +145,8 @@ def create_snippet(snippet: Snippet):
         session.add(db_snippet)
         session.commit()
         session.refresh(db_snippet)
+
+    logger.debug(f"Stored snippet in DB with ID {db_snippet.id}")
 
     review.snippet_id = db_snippet.id
 
@@ -177,6 +198,8 @@ def delete_snippet(snippet_id: int):
 
 @app.delete("/snippets")
 def wipe_db():
+    logger.warning("Wiping all snippets from the database!")
+    # Ideally an action like this would also log request details (i.e. headers, IP if possible), but can't figure it out right now
     with Session(engine) as session:
         session.execute(delete(DB_Snippet))
         session.commit()
