@@ -13,6 +13,7 @@
 - Build container on CI
 - Custom review prompts (in separate table, with separate endpoint for setting them)
 - Linters?
+- Embedding snippets, check if similar snippet was reviewed before and add to context if yes
 
 
 # Getting started
