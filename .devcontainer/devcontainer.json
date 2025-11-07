@@ -1,0 +1,37 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/debian
+{
+	"name": "Dev",
+	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+	"image": "mcr.microsoft.com/devcontainers/base:dev-debian",
+	"features": {
+		"ghcr.io/devcontainers/features/common-utils:2": {
+			"installZsh": "true",
+			"configureZshAsDefaultShell": "true",
+			"installOhMyZsh": "false",
+			"installOhMyZshConfig": "false",
+			"upgradePackages": "true",
+			"nonFreePackages": "true"
+		},
+		"ghcr.io/rio/features/chezmoi:1": {},
+		"ghcr.io/devcontainers-extra/features/mise:1": {}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"streetsidesoftware.code-spell-checker"
+			]
+		}
+	},
+	"runArgs": [
+		"--userns=keep-id",
+		"--security-opt=label=disable",
+		"--device=/dev/fuse"
+	],
+	"postCreateCommand": "mise trust && mise install",
+	"containerEnv": {
+		"HOME": "/home/vscode"
+	},
+	"remoteUser": "vscode",
+	"containerUser": "vscode"
+}

@@ -1,0 +1,22 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+    - id: trailing-whitespace
+      stages: [pre-commit]
+    - id: end-of-file-fixer
+      stages: [pre-commit]
+    - id: check-added-large-files
+      args: [--maxkb=200]
+      stages: [pre-commit]
+    - id: mixed-line-ending
+      args: [--fix=lf]
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.3
+    hooks:
+      - id: ruff-check
+      - id: ruff-format
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.24.2
+    hooks:
+      - id: gitleaks
