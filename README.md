@@ -1,4 +1,5 @@
 # Vague Roadmap
+Basic setup
 1. ~~Set up repo with devcontainer, pre-commit, etc~~
 2. ~~Add uv project, some deps, create first scaffolding with dummy endpoints~~
 3. ~~Create some dummy data to send, and some methods to send (use mise), also start service~~
@@ -6,7 +7,8 @@
     - https://docs.pydantic.dev/latest/examples/orms/
     - https://docs.sqlalchemy.org/en/20/orm/quickstart.html
     - https://sqlmodel.tiangolo.com/
-5. Ask LLM to create more test data, store, add utility to run as demo
+5. ~~Add LLM to the mix~~
+6. Add docker file, CI build, docker-compose.yml
 
 
 ## Some possible additions
@@ -37,11 +39,12 @@ mise tasks
 to get a list of available tasks.
 
 ## Secrets
-This project requires an OpenAI api key stored in an `.env.json` file at the top of the repo, that looks like
+For development, this projects requires an OpenAI api key stored in an `.env.json` file at the top of the repo, that looks like
 ```
 {
     "OPENAI_API_KEY": "sk-...."
 }
 
 ```
-A better approach would be to add [fnox](https://fnox.jdx.dev/), store the secret either using local encryption or better in a cloud secret manager, and use `mise` to add it to the relevant commands (i.e. `fnox exec -- uv run fastapi dev server/src/main.py`)
+A better approach would be to add [fnox](https://fnox.jdx.dev/), store the secret either using local encryption or better in a cloud secret manager, and use `mise` to add it to the relevant commands (i.e. `fnox exec -- uv run fastapi dev server/src/main.py`).
+This would also allow using basically identically commands locally and in the cloud (where secret manager access would be injected for example via IAM.)
