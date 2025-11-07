@@ -3,7 +3,7 @@ from typing import Union
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from sqlmodel import Field, Session, SQLModel, create_engine
+from sqlmodel import Field, Session, SQLModel, create_engine, delete
 
 # setup tasks
 app = FastAPI()
@@ -85,10 +85,9 @@ def create_snippet(snippet: Snippet):
     review.snippet_id = db_snippet.id
 
     return review
-    # return snippet
-    # return {"message": "Snippet created successfully", "snippet_id": db_snippet.id}
 
 
+# don't know if using the same endpoint and distinguishing by methods is best practice here, but I am going with it
 @app.get("/snippets/{snippet_id}")
 def read_snippet(snippet_id: int):
     return {
@@ -97,3 +96,43 @@ def read_snippet(snippet_id: int):
         "code": "print('Hello, World!')",
         "user": "example_user",
     }
+
+
+@app.get("/snippets")
+def list_snippets():
+    # auto complete by copilot, first improvement would be pagination
+    with Session(engine) as session:
+        snippets = session.query(DB_Snippet).all()
+        result = []
+        for snip in snippets:
+            result.append(
+                {
+                    "id": snip.id,
+                    "language": snip.language,
+                    "user": snip.user,
+                    "review_summary": snip.review_summary,
+                    "review_severity": snip.review_severity,
+                }
+            )
+    return result
+
+
+@app.delete("/snippets/{snippet_id}")
+def delete_snippet(snippet_id: int):
+    # again copilot autocomplete
+    with Session(engine) as session:
+        snippet = session.get(DB_Snippet, snippet_id)
+        if snippet:
+            session.delete(snippet)
+            session.commit()
+            return {"message": f"Snippet {snippet_id} deleted."}
+        else:
+            return {"message": f"Snippet {snippet_id} not found."}
+
+
+@app.delete("/snippets")
+def wipe_db():
+    with Session(engine) as session:
+        session.execute(delete(DB_Snippet))
+        session.commit()
+    return {"message": "All snippets deleted."}
