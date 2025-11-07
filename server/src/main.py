@@ -2,13 +2,20 @@ from typing import Union
 
 from fastapi import FastAPI
 from pydantic import BaseModel
+from pydantic_core import from_json
 
 from sqlmodel import Field, Session, SQLModel, create_engine, delete
+
+from openai import OpenAI
 
 # setup tasks
 app = FastAPI()
 
 engine = create_engine("sqlite:///./test.db", echo=True)
+
+client = OpenAI()
+
+MOCK_OPENAI = False
 
 
 # schemas
@@ -53,14 +60,50 @@ SQLModel.metadata.create_all(engine)
 
 # some functions
 
+basic_prompt = """
+Please review the above code snippet for potential issues, including but not limited to security vulnerabilities, performance concerns, and code quality.
+"""
+format_prompt = """
+Provide a summary of your findings, specific suggestions for improvement, and categorize the severity of the issues as 'low', 'medium', or 'high'.
+Respond in the following JSON format:
+{{
+  "summary": "<brief summary of issues>",
+  "suggestions": ["<suggestion 1>", "<suggestion 2>", "...],
+  "severity": "<low|medium|high>"
+}}
+"""
+
 
 def review_code(code: str, language: str) -> Review:
-    # placeholder implementation (by copilot autocomplete)
-    return Review(
-        summary="This is a placeholder review summary.",
-        suggestions=["Improve variable naming.", "Add error handling."],
-        severity="medium",
-    )
+    prompt = f"Here is a {language} code snippet:\n\n{code}\n\n{basic_prompt}"
+
+    # better would be to use a proper mocking library, maybe mock the completions method, but lets start here
+    if not MOCK_OPENAI:
+        completions = client.chat.completions.create(
+            model="gpt-5-nano",
+            messages=[
+                {
+                    "role": "system",
+                    "content": f"You are a helpful code review assistant.\n {format_prompt}",
+                },
+                {"role": "user", "content": prompt},
+            ],
+        )
+        response_content = completions.choices[0].message.content
+
+        review = Review.model_validate(from_json(response_content))
+    else:
+        # mock response for testing without hitting OpenAI API
+        review = Review(
+            summary="The code contains hardcoded API keys which is a security risk.",
+            suggestions=[
+                "Move API keys to environment variables.",
+                "Avoid using eval() for executing code.",
+            ],
+            severity="high",
+        )
+
+    return review
 
 
 # endpoints
