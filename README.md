@@ -35,3 +35,13 @@ Run
 mise tasks
 ```
 to get a list of available tasks.
+
+## Secrets
+This project requires an OpenAI api key stored in an `.env.json` file at the top of the repo, that looks like
+```
+{
+    "OPENAI_API_KEY": "sk-...."
+}
+
+```
+A better approach would be to add [fnox](https://fnox.jdx.dev/), store the secret either using local encryption or better in a cloud secret manager, and use `mise` to add it to the relevant commands (i.e. `fnox exec -- uv run fastapi dev server/src/main.py`)

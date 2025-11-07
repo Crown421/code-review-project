@@ -1,5 +1,6 @@
 [env]
 UV_NO_MANAGED_PYTHON = true
+_.file = { path = ".env.json", redact = true }
 
 [tools]
 pre-commit = "latest"

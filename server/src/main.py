@@ -52,6 +52,8 @@ SQLModel.metadata.create_all(engine)
 
 
 # some functions
+
+
 def review_code(code: str, language: str) -> Review:
     # placeholder implementation (by copilot autocomplete)
     return Review(
