@@ -3,9 +3,15 @@ from typing import Union
 from fastapi import FastAPI
 from pydantic import BaseModel
 
+from sqlalchemy import create_engine
+
+# setup tasks
 app = FastAPI()
 
+engine = create_engine("sqlite:///./test.db", echo=True)
 
+
+# schemas
 class CodeMetadata(BaseModel):
     filename: str
     lines: str
