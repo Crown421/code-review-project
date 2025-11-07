@@ -1,6 +1,7 @@
 name: Build and Push Docker Image
 
 # This config is copied from a personal project and modified
+# One improvement I would like is to tie docker tags with git tags, and have both be changed when the "version" key in the pyproject.toml changes after merging a PR.
 
 on:
   push:

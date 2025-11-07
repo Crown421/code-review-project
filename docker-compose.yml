@@ -1,0 +1,7 @@
+services:
+  review-service:
+    image: ghcr.io/crown421/code-review-project/code-review-service:main
+    ports:
+      - "8080:80"
+    env_file:
+      - .env

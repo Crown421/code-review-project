@@ -8,12 +8,11 @@ Basic setup
     - https://docs.sqlalchemy.org/en/20/orm/quickstart.html
     - https://sqlmodel.tiangolo.com/
 5. ~~Add LLM to the mix~~
-6. Add docker file, CI build, docker-compose.yml
+6. ~~Add docker file, CI build, docker-compose.yml~~
 
 
 ## Some possible additions
 - Look at logging, with proper levels, use env variable to set (i.e. debug/info/warn)
-- Build container on CI
 - Custom review prompts (in separate table, with separate endpoint for setting them)
 - Linters?
 - Embedding snippets, check if similar snippet was reviewed before and add to context if yes
@@ -39,12 +38,27 @@ mise tasks
 to get a list of available tasks.
 
 ## Secrets
-For development, this projects requires an OpenAI api key stored in an `.env.json` file at the top of the repo, that looks like
+For development, this projects requires an OpenAI api key stored in an `.env` file at the top of the repo, that looks like
 ```
-{
-    "OPENAI_API_KEY": "sk-...."
-}
-
+OPENAI_API_KEY=sk-....
 ```
-A better approach would be to add [fnox](https://fnox.jdx.dev/), store the secret either using local encryption or better in a cloud secret manager, and use `mise` to add it to the relevant commands (i.e. `fnox exec -- uv run fastapi dev server/src/main.py`).
+A better approach could be to add [fnox](https://fnox.jdx.dev/), store the secret either using local encryption or better in a cloud secret manager, and use `mise` to add it to the relevant commands (i.e. `fnox exec -- uv run fastapi dev server/src/main.py`).
 This would also allow using basically identically commands locally and in the cloud (where secret manager access would be injected for example via IAM.)
+
+## Docker compose
+This repo also builds the service image on CI, and provides a `docker-compose.yml` that consumes that image.
+If you prefer using it, and also would like to avoid using `mise`, you can start the service with
+```
+docker compose up
+```
+in the repo root. If you are using podman, you may need to install [podman-compose](https://github.com/containers/podman-compose) as well.
+
+You can then test the service for example with
+```
+curl -X 'POST' \
+  'http://127.0.0.1:8000/snippets' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d "@data/sample1.json" | jq
+```
+(Note that the response gets piped into `jq`, which should be installed on most systems.)
