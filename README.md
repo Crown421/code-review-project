@@ -20,8 +20,16 @@ Basic setup
 - Prompt versioning using a tool like MLFLow
     - The formatting/ system prompts are currently hardcoded, better would be to store them in a prompt manager and retrieve the correct version at runtime (based on config/ env variables)
 - Run a linter first (i.e. ruff, jslint, ...), for example using a sys call, to reduce LLM/ token usage
-- Embedding snippets, check if similar snippet was reviewed before and add to context if yes
+- Embedding snippets, check if similar snippet was reviewed before and take additional action if so.
 - Evaluate performance, despite using GPT-5-nano, the response is very slow.
+- Add a CLI/ client component, to make it easy to use this service from a local repo, even if the container is running locally.
+    - Should integrate with `git diff` to get the code to be reviewed
+    - Auto detect language (if possible)
+    - Auto detect user (e.g. from git config)
+    - Could auto-detect configs for linter tools make creating custom prompts for a specific user/ code base easy
+- Add tracing
+    - Log prompt versions, submitted prompts and responses
+    - Possibly one could be really clever and analyze code reviews that are "close" (either in time or in code similarity), and infer usefulness of suggestions to optimize service.
 
 
 # Getting started
