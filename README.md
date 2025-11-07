@@ -13,8 +13,13 @@ Basic setup
 
 ## Some possible additions
 - Look at logging, with proper levels, use env variable to set (i.e. debug/info/warn)
-- Custom review prompts (in separate table, with separate endpoint for setting them)
-- Linters?
+- Add tests (out of time for today)
+- User specific review prompts (in separate table, with separate endpoint for setting them)
+    - Add endpoint that lets users send custom prompts, request body should include username, language, and the prompt itself.
+    - When a query hits the snippets endpoint, retrieve the custom user prompt, if there is one the user/ language combination.
+- Prompt versioning using a tool like MLFLow
+    - The formatting/ system prompts are currently hardcoded, better would be to store them in a prompt manager and retrieve the correct version at runtime (based on config/ env variables)
+- Run a linter first (i.e. ruff, jslint, ...), for example using a sys call, to reduce LLM/ token usage
 - Embedding snippets, check if similar snippet was reviewed before and add to context if yes
 
 
