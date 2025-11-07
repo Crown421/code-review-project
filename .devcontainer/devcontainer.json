@@ -28,7 +28,7 @@
 		"--security-opt=label=disable",
 		"--device=/dev/fuse"
 	],
-	"postCreateCommand": "mise trust && mise install",
+	"postCreateCommand": "mise trust && mise install && uv sync",
 	"containerEnv": {
 		"HOME": "/home/vscode"
 	},

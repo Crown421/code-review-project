@@ -11,3 +11,23 @@
 - Build container on CI
 - Custom review prompts (in separate table, with separate endpoint for setting them)
 - Linters?
+
+
+# Getting started
+## Setting up the environment
+This project uses a dev container, so the easiest way to work in the same context as me is to
+- Use VSCode
+- Install the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+- Set up a container runtime
+    - On Linux, either install `podman` and follow [these instructions](https://code.visualstudio.com/remote/advancedcontainers/docker-options#_podman), or install docker and start the daemon.
+    - On Mac, either Docker Desktop or Podman Desktop (again needs [a settings change](https://code.visualstudio.com/remote/advancedcontainers/docker-options#_podman) should work.
+- Open this project folder
+- Hit Ctrl+P (or the Mac equivalent) and run `Dev Containers: Open Workspace in Container`
+
+## Running the service and commands
+This project uses [mise](https://mise.jdx.dev/) to make running various useful commands easy.
+Run
+```
+mise tasks
+```
+to get a list of available tasks.

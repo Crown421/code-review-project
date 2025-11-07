@@ -7,5 +7,5 @@ python = "3.13"
 uv = "latest"
 
 [tasks.server]
-description = "Server the fastapi app in dev mode"
+description = "Serve the fastapi app in dev mode"
 run = "uv run fastapi dev server/src/main.py"
