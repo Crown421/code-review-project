@@ -1,0 +1,6 @@
+{
+    "language": "javascript",
+    "code": "function showUserMessage(message) {\n    var container = document.getElementById(\"message-box\");\n    \n    if (message == \"\") {\n        message = \"Welcome, new user!\";\n    }\n    \n    container.innerHTML = \"<h3>Notification</h3><p>\" + message + \"</p>\";\n}\n\nvar userInput = window.location.search.split('=')[1];\nshowUserMessage(userInput);",
+    "user": "js_alice",
+    "metadata": null
+}

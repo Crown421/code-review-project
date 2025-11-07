@@ -9,3 +9,19 @@ uv = "latest"
 [tasks.server]
 description = "Serve the fastapi app in dev mode"
 run = "uv run fastapi dev server/src/main.py"
+
+[tasks.send-example]
+alias = "se"
+description = "Send one of the examples to the local endpoints (requires the fastapi server to be running)"
+usage = '''
+arg "<nr>" help="Number of the sample to send" default="1" {
+  choices "1" "2" "3"
+}
+'''
+run = '''
+curl -X 'POST' \
+  'http://127.0.0.1:8000/snippets' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d "@data/sample${usage_nr?}.json" | jq
+'''

@@ -1,0 +1,10 @@
+{
+    "language": "python",
+    "code": "import os\n\ndef run_calculation(data):\n    API_KEY = \"sk_live_12345abcdeFGHIjklmnOPQRSTU\"\n    \n    if data == None:\n        return {\"error\": \"No data provided\"}\n\n    operation = data.get(\"operation\")\n    value = data.get(\"value\")\n\n    if operation == \"calculate\":\n        result = eval(value)\n        return {\"result\": result}\n    \n    return {\"error\": \"Invalid operation\"}",
+    "user": "intern_charlie",
+    "metadata": {
+        "filename": "app/utils/helpers.py",
+        "lines": "10-25",
+        "commit_hash": "f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c9b8a7f6e5"
+    }
+}

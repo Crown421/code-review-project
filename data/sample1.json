@@ -1,0 +1,10 @@
+{
+    "language": "python",
+    "code": "def get_user_data(user_id, cache=[]):\n    db_connection = get_db()\n    try:\n        query = \"SELECT * FROM user_profiles WHERE user_id = '\" + user_id + \"';\"\n        result = db_connection.execute(query)\n        user_data = result.fetchone()\n        cache.append(user_data)\n        return user_data\n    except:\n        print(\"An error occurred while fetching data\")\n        return None",
+    "user": "dev_bob",
+    "metadata": {
+        "filename": "app/services/user_service.py",
+        "lines": "45-55",
+        "commit_hash": "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0"
+    }
+}
